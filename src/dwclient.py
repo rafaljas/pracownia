@@ -19,8 +19,6 @@ class wikiclient:
 
         def __get_url_content(self, query = ''):
                 query_url = urllib.urlencode(query)
-                query_response = self.opener.open(self.path, query_url).readlines()
-                return query_response
                 try:
                         query_response = self.opener.open(self.path, query_url).readlines()
                 except Exception, e:
@@ -35,7 +33,7 @@ class wikiclient:
                         query = []
                         response = self.__get_url_content(query)
                         page_html = ''.join(response)
-                return ('<div class="cuinfo">' in page_html) and not ('<div class="cuinfo"></div>' in page_html)
+                return '<li class="user">Logged in as: <bdi>' in page_html  # and not ('<div class="cuinfo"></div>' in page_html)
 
         def log_in(self):
                 self.cj.clear()
@@ -48,6 +46,8 @@ class wikiclient:
                 query = [action, user, passwd]
                 response = self.__get_url_content(query)
                 page_html = ''.join(response)
+
+                # open("reesult.html", 'w').write(page_html)
 
                 if self.is_loggedin():
                         self.loggedin = True
@@ -150,10 +150,10 @@ if __name__ == '__main__':
         if ver > version_info[:2]:
                 stderr.write("Python is too old, please clean up the molt and rejuvenate to version %d.%d.\n" % ver)
                 exit(1)
-
-        w =wikiclient("http://localhost:8800/", "wiki123", "123qwe")
-        print urllib2.urlopen("http://www.google.pl/").read(100)
-        print urllib2.urlopen("http://localhost:8800/doku.php").read(100)
-        w.log_in()
         #}}}
+
+        c = wikiclient("http://localhost:8800/", "automata", "aq12ws")
+        assert c.is_loggedin() is False
+        assert c.log_in()
+        assert c.is_loggedin()
 
