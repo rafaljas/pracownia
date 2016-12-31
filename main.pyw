@@ -43,28 +43,40 @@ def checkIfFree():
     return lock
 
 
+def setup_logger():
+    l = logging.getLogger("pracownia")
+    h = logging.handlers.RotatingFileHandler("data" + sep + "log.txt", mode='a', maxBytes=600000, backupCount=6, encoding=None, delay=0)
+    h.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+    l.addHandler(h)
+    l.setLevel(1)
+    return l
+
 if __name__ == '__main__':
     import time, sys
     from sys import argv
     from os import sep
     import os
     import tempfile, glob
-    
-    cont = False    
+    import logging
+    import logging.handlers
 
-    # print "checking LOCK"
+    logger = setup_logger()
+    cont = False
+
+    logger.info("checking LOCK")
+
     lock = checkIfFree()
 
     if not lock:
-            sys.exit(1)        
-    # print "free to go!\n\n\n"
+            sys.exit(1)
+    logger.info("free to go!")
     nf = open('logfile', 'w+')
     sys.stdout = nf
     sys.stdout = sys.__stdout__
-    print "end"
+    logger.info("lock OK")
     nf.close()
-    logger = False
-    logger = True
+    # logger = False
+    # logger = True
     nf = False
 
     if logger:
@@ -88,8 +100,8 @@ if __name__ == '__main__':
     main(nf, argv)
     if logger:
         sys.stdout = sys.__stdout__
-        print "end"
         nf.close()
+    logger.info("STOP")
     lock.close()
 
 

@@ -7,6 +7,9 @@
 import dwclient as dokuwiki
 import threading, time, Queue
 import re
+import logging
+
+logger = logging.getLogger("pracownia")
 
 # some place for code
 class wikithread(threading.Thread):
@@ -120,7 +123,7 @@ class wikithread(threading.Thread):
 				self.parent.feedback_queue.put('action page_save dropped * no ID given')
 				return
 
-			#print 'WIKI: saving...', dd['id']
+			logger.info('WIKI: saving... {}'.format(dd['id']))
 			# save group
 			if dd['id'][:5] == 'group':
 				#print datadict
@@ -146,7 +149,7 @@ class wikithread(threading.Thread):
 				content = "".join(test_list)
 				#print content
 
-				page_save_status = self.wiki.page_save('testy-system:start', content)
+				page_save_status = self.wiki.page_save('testy:start', content)
 				self.parent.feedback_queue.put('action page_save * ' + dd['id'] + ' ' + str(page_save_status))
                                 self.parent.feedback_queue.put('action page_save * ' + dd['id'] + ' end')
 				return True
@@ -174,7 +177,7 @@ class wikithread(threading.Thread):
 				content = "".join(test_list)
 				#print content
 
-				page_save_status = self.wiki.page_save('przedmioty-system:start', content)
+				page_save_status = self.wiki.page_save('przedmioty:start', content)
 				self.parent.feedback_queue.put('action page_save * ' + dd['id'] + ' ' + str(page_save_status))
                                 self.parent.feedback_queue.put('action page_save * ' + dd['id'] + ' end')
 				return True
@@ -195,8 +198,8 @@ class wikithread(threading.Thread):
 
 			# save item
 			if ld['id'][:4] == 'item':
-				item_id = 'przedmioty-system:' + ld['id']
-				item_list_id = 'przedmioty-system:start'
+				item_id = 'przedmioty:' + ld['id']
+				item_list_id = 'przedmioty:start'
 
 				# update test
 				test_content = '====== %s ======\n' % (od['item:name']) # make title
@@ -217,8 +220,8 @@ class wikithread(threading.Thread):
 			if ld['id'][:4] == 'test':
 				# have all pages id available
 
-				test_id = 'testy-system:' + ld['id']
-				test_list_id = 'testy-system:start'
+				test_id = 'testy:' + ld['id']
+				test_list_id = 'testy:start'
 
 				# update test
 				test_content = '====== %s ======\n' % (od['test:name']) # make title
@@ -245,9 +248,9 @@ class wikithread(threading.Thread):
 
 			page_id = dd['id'].split('#')
 			if 'ITEM' == page_id[0]:
-				page_id = 'przedmioty-system:item' + page_id[1]
+				page_id = 'przedmioty:item' + page_id[1]
 			if 'TEST' == page_id[0]:
-				page_id = 'testy-system:test' + page_id[1]
+				page_id = 'testy:test' + page_id[1]
 			
 			#print page_id
 			page_del_status = self.wiki.page_del(page_id)

@@ -117,7 +117,7 @@ class wikiclient:
         def page_save(self, page_id , page_content, page_summary = 'aktualizacja systemowa'):
                 if not self.loggedin:
                         self.log_in()
-                print "logged"
+                
                 now = str(time.time())
                 if page_content:
                        page_content = "".join([page_content, "\n\n <!--aktualizacja:", now, "-->"])
@@ -130,9 +130,7 @@ class wikiclient:
                 token = ('sectok', self.get_token(page_id))
                 
                 query = [id, summary, wikitext, action, token]
-                response = self.__get_url_content(query)
-
-                save_page(''.join(response))            
+                response = self.__get_url_content(query)            
 
                 check_save_response = self.page_get_txt(page_id)
                 # print "dwclient>>> response:\n", check_save_response, "\n<<<dwclient"

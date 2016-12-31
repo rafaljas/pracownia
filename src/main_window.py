@@ -24,6 +24,9 @@ import pprint
 import time, datetime
 from os import sep
 import converter
+import logging
+
+logger = logging.getLogger("pracownia")
 
 
 class MainWindow:
@@ -739,7 +742,7 @@ class MainWindow:
             self.descriptionField.get_buffer().set_text(self.item2string())
             return
         
-        print model[ite][0]
+        logger.info(model[ite][0])
         for row in self.sig_list:
             if row[0] == model[ite][0]:
                 row[3] = int(value)
@@ -863,6 +866,7 @@ class MainWindow:
         return ".".join([str(data[0]), str(data[1]).zfill(2), str(data[2]).zfill(2)])
 
     def applyRenting(self, widget = None):
+        logger.info("Apply renting")
         now = time.time()
         day = 24 * 60 * 60
         data_str = self.time2string(now)
@@ -880,18 +884,18 @@ class MainWindow:
             
             rented = []
             if e[2]:
-                print e[0], e[3]
+                logger.info((e[0], e[3]))
                 sig = e[0].split()
                 if len(sig) > 1:
                     sig[0] += "/0"
 
                 sig = sig[0].split("/")
                 if len(sig) > 2:
-                    print "test item"
+                    logger.info("test item")
                     t_id = "TEST#" + sig[0]
                     tests_to_update.append(t_id)
                     item_sig = sig[0] + "/" + sig[1]
-                    print t_id
+                    logger.info(t_id)
                     test = self.config[t_id]
                     for i_id in self.config[t_id]['items']:
                         if self.config[i_id]['sig'] == item_sig:
@@ -911,7 +915,7 @@ class MainWindow:
                                 person['rent'].append([i_id, 'do zwrotu'.decode("cp1250").encode("UTF-8"), data_e, item_sig])
                                 for inx in range(len(item['Q'])):
                                     if item_sig == item['Q'][inx][0]:
-                                        print item['Q'][inx]
+                                        logger.info(item['Q'][inx])
                                         item['Q'][inx] += [data_str, data_e, person['ID']]
                                         
                                 if data_e < first_date:
@@ -920,9 +924,9 @@ class MainWindow:
                             self.config[i_id] = item
                             items_to_update.append(i_id)
                 else:
-                    print "other item"
+                    logger.info("other item")
                     i_id = "ITEM#" + sig[0]
-                    print i_id
+                    logger.info(i_id)
                     items_to_update.append(i_id)
                     data_e = self.time2string(now + (int(e[3]) * day))
                     item_sig = sig[0] + "/" + sig[1]
@@ -933,7 +937,7 @@ class MainWindow:
                     person['rent'].append([i_id, 'do zwrotu'.decode("cp1250").encode("UTF-8"), data_e, item_sig])
                     for inx in range(len(item['Q'])):
                         if item_sig == item['Q'][inx][0]:
-                            print item['Q'][inx]
+                            logger.info(item['Q'][inx])
                             item['Q'][inx] += [data_str, data_e, person['ID']]
                     if data_e < first_date:
                         first_date = data_e
@@ -944,8 +948,8 @@ class MainWindow:
         if first_date != "9999":
             person['rent_date'] = first_date
 
-        print person['rent']
-        print person['rent_old']
+        logger.info(person['rent'])
+        logger.info(person['rent_old'])
         self.config[person['ID']] = person
         self.config.sync()
         self.updatePersonRow(person['ID'])
@@ -991,7 +995,7 @@ class MainWindow:
         if ites == None:
             return
 
-        print model, self.item_store
+        logger.info((model, self.item_store))
 
         for ite in ites:
             if model[ite][0] not in self.tracker['chosen-rent-items']:
@@ -1032,7 +1036,7 @@ class MainWindow:
             return
         for i in range(len(self.personChoosingFields)):
             if self.personChoosingFields[i][0] == widget:
-                print "Edytowane pole numer:", i
+                logger.info("Edytowane pole numer: {}".format(str(i)))
                 self.personChoosingFields[i][3] = widget.get_text()
                 self.person_filter.refilter()
                 self.displayPersonData()

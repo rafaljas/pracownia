@@ -248,7 +248,6 @@ class safedb:
 
     def createWikiMessage(self, key, page_content = None):
         print "safedb.createWikiMessage(): key:", key
-        return
         if key[:3] == "del":
             action = 'page_del'
             value = {'id': key[3:]}
