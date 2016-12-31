@@ -81,7 +81,7 @@ class MainWindow:
 
 
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-        # gobject.timeout_add(1000, self.getMessages)
+        gobject.timeout_add(1000, self.getMessages)
 
         self.config = safedb.safedb()
         self.config.app = self
@@ -2979,6 +2979,7 @@ class MainWindow:
     def wikiLogin(self):
         self.w_image.set_from_file('gfx\\yellow.gif')
         self.wiki['state'] = "£¹czenie...".decode("cp1250").encode("UTF-8")
+        print "WIKI LOGIN", self.config['#wiki-path'], self.config['#wiki-login'], self.config['#wiki-pass']
         self.wiki_proxy = wiki_proxy.wikiclient(self.config['#wiki-path'], self.config['#wiki-login'], self.config['#wiki-pass'])
         self.wiki_thread = wiki_thread.wikithread(self, self.wiki_proxy)
         

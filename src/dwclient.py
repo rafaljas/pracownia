@@ -24,7 +24,7 @@ class wikiclient:
                 except Exception, e:
                         self.last_error = e
                         raise e
-                        return ''
+                        # return ''
                 return query_response
 
         # login / logout
@@ -47,7 +47,7 @@ class wikiclient:
                 response = self.__get_url_content(query)
                 page_html = ''.join(response)
 
-                # open("reesult.html", 'w').write(page_html)
+                
 
                 if self.is_loggedin():
                         self.loggedin = True
@@ -117,30 +117,47 @@ class wikiclient:
         def page_save(self, page_id , page_content, page_summary = 'aktualizacja systemowa'):
                 if not self.loggedin:
                         self.log_in()
-
+                print "logged"
                 now = str(time.time())
                 if page_content:
-                       page_content = "".join(["<html><!--aktualizacja:", now, "--></html>", page_content])
-                #print "dwclient>>> page content:\n", page_content, "\n<<<dwclient"
+                       page_content = "".join([page_content, "\n\n <!--aktualizacja:", now, "-->"])
+                # print "dwclient>>> page content:\n", page_content, "\n<<<dwclient"
                 # dokuwiki page http query parameters
                 id = ('id', page_id)
                 summary = ('summary', page_summary)
                 wikitext = ('wikitext', page_content)
                 action = ('do', 'save')
-
-                query = [id, summary, wikitext, action]
+                token = ('sectok', self.get_token(page_id))
+                
+                query = [id, summary, wikitext, action, token]
                 response = self.__get_url_content(query)
 
+                save_page(''.join(response))            
+
                 check_save_response = self.page_get_txt(page_id)
-                #print "dwclient>>> response:\n", check_save_response, "\n<<<dwclient"
+                # print "dwclient>>> response:\n", check_save_response, "\n<<<dwclient"
                 
                 if page_content:
                         return "!--aktualizacja:"+now+"--" in check_save_response
                 else:
                         return check_save_response == ''
 
+        def get_token(self, page_id):
+                query = [("id", page_id), ("do", "edit")]
+                response = self.__get_url_content(query)
+                found = ""
+                for l in response:
+                        if "sectok" in l:
+                                found = l
+                                break
+                token = found.split("sectok")[1].split('"')[0][1:]
+                return token
+
         def page_del(self, page_id):
                 return self.page_save(page_id, '')
+
+def save_page(content):
+        open("result.html", 'w').write(content)
 
 #{{{ python version check
 if __name__ == '__main__':
@@ -156,4 +173,6 @@ if __name__ == '__main__':
         assert c.is_loggedin() is False
         assert c.log_in()
         assert c.is_loggedin()
+        assert c.get_token("start")
+        print c.page_save("start", "CONTENT")
 
