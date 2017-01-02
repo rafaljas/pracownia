@@ -28,12 +28,12 @@ class safedb:
         if default_path:
             file_name = 'data' + sep + file_name
         if os.path.isdir(file_name):
-            print "E:znaleziono katalog!"
+            # print "E:znaleziono katalog!"
             self.last_error = "Katalog w miejscu pliku konfiguracyjnego"
             return False
 
         if os.path.isfile(file_name):
-            print "plik znaleziony"
+            # print "plik znaleziony"
             self.loadFile(file_name, False)
             return True
 
@@ -56,12 +56,12 @@ class safedb:
         try:
             self.dbA = termdb.termdb(self.info['#A'])
         except:
-            print "Nie mozna zaladowac pliku A, sprawdzanie domyslnej lokacji"
+            # print "Nie mozna zaladowac pliku A, sprawdzanie domyslnej lokacji"
             self.dbA = termdb.termdb(file_name + "A", 1000)
         try:
             self.dbB = termdb.termdb(self.info['#B'])
         except:
-            print "Nie mozna zaladowac pliku B, sprawdzanie domyslnej lokacji"
+            # print "Nie mozna zaladowac pliku B, sprawdzanie domyslnej lokacji"
             self.dbB = termdb.termdb(file_name + "B", 1000)
         
         if self.info['#last'] == 'A':
@@ -70,7 +70,7 @@ class safedb:
             self.checkFiles(good = self.dbB, bad = self.dbA)        
 
         self.updateFile()
-        print self["KEYS_TO_UPDATE"]
+        # print self["KEYS_TO_UPDATE"]
         return True
     
 
@@ -78,12 +78,12 @@ class safedb:
         for k in good.keys():
             try:
                 if bad[k] != good[k]:
-                    print "blad na kluczu:", k
-                    print bad[k], " -- zamiast -- ", good[k]
+                    # print "blad na kluczu:", k
+                    # print bad[k], " -- zamiast -- ", good[k]
                     bad[k] = good[k]
             except:
-                print "blad na kluczu:", k
-                print "brak klucza -- ", good[k]
+                # print "blad na kluczu:", k
+                # print "brak klucza -- ", good[k]
                 bad[k] = good[k]
 
         bad.sync()
@@ -93,6 +93,7 @@ class safedb:
 
 
     def printData(self):
+        return
         print "============================== INFO ===="
         for k in self.info.keys():
             print k, self.info[k]
@@ -140,32 +141,33 @@ class safedb:
         return self.dbA[key]
 
     def __setitem__(self, key, value):
-        print "safedb.__setitem__:", key, value
+        # print "safedb.__setitem__:", key, value
         if key[:5] in ["TEST#", "ITEM#", "GROUP"]:
-            print "safedb.__setitem__: key should be reported"
+            # print "safedb.__setitem__: key should be reported"
             assert(self.app)
             changedValue = True
             try:
                 # title change
                 if key[:5] == "TEST#" and self[key]["test:name"] != value["test:name"]:
-                    print "safedb.__setitem__: test name changed"
+                    # print "safedb.__setitem__: test name changed"
                     self.keys_to_update.append("GROUP##" + value['group'])
                 # title or category in nontest item change
                 elif key[:5] == "ITEM#" and not value['test'] and \
                     (self[key]["item:name"] != value["item:name"] or self[key]['category'] != value['category']):
-                    print "safedb.__setitem__: item name or category changed"
+                    # print "safedb.__setitem__: item name or category changed"
                     self.keys_to_update.append(value['category'])
                 
                 # other change
                 if self[key] == value:
                     changedValue = False
                 else:
-                    print key, "safedb.__setitem__: value changed !!!!!"
+                    pass
+                    # print key, "safedb.__setitem__: value changed !!!!!"
             except:
-                print key, "safedb.__setitem__: new value !!!!!"
+                # print key, "safedb.__setitem__: new value !!!!!"
                 if key[:5] == "ITEM#" and not value['test']:
                     self.keys_to_update.append(value['category'])
-                    print key, "safedb.__setitem__: new non-test item !!!!!"
+                    # print key, "safedb.__setitem__: new non-test item !!!!!"
 
             if changedValue:
                 if key not in self.keys_to_update:
@@ -206,7 +208,7 @@ class safedb:
     def sync(self):
         self.raiseCounter()
         tmpList = []
-        print "safedb.sync keys_to_update:", self.keys_to_update
+        # print "safedb.sync keys_to_update:", self.keys_to_update
         page_content = None
         for key in self.keys_to_update:
             if key[:4] == "ITEM":
@@ -233,7 +235,7 @@ class safedb:
 
         self["KEYS_TO_UPDATE"] = keys + tmpList
         
-        print "safedb.sync(): tmpList:", tmpList
+        # print "safedb.sync(): tmpList:", tmpList
         
         self.info['#last'] = 'B'
         self.info.sync()
@@ -247,7 +249,7 @@ class safedb:
 
 
     def createWikiMessage(self, key, page_content = None):
-        print "safedb.createWikiMessage(): key:", key
+        # print "safedb.createWikiMessage(): key:", key
         if key[:3] == "del":
             action = 'page_del'
             value = {'id': key[3:]}
@@ -285,10 +287,11 @@ class safedb:
 
         
         try:
-            print "safedb.createWikiMessage(): message:", (action, value)
+            # print "safedb.createWikiMessage(): message:", (action, value)
             self.app.wiki_thread.ioq.put((action, value))
         except Exception, e:
-            print "No wiki_thread !?", e
+            pass
+            # print "No wiki_thread !?", e
 
 
     def raiseCounter(self):
@@ -355,7 +358,7 @@ class safedb:
                 self.regenerateWikiPages()
                         
             
-        print "data file version:", file_ver
+        # print "data file version:", file_ver
         if file_ver != self.__ver__:
 
             self.regenerateWikiPages()
@@ -442,13 +445,14 @@ class safedb:
         return p_id      
 
     def printPersons(self):
+        return
         print self['#PERS_COUNT']
         for p_id in self['#PERS_LIST']:
             print self[p_id]
 
     
     def regenerateWikiPages(self, widget = None):
-        print "Rozpoczêto regeneracjê stron!"
+        # print "Rozpoczêto regeneracjê stron!"
         self["KEYS_TO_UPDATE"] = []
         tmp = []
         tmp.append(self['#ITEM_TYPE_LIST_2'][0])
@@ -463,20 +467,20 @@ class safedb:
 
 
     def addTest(self, data):
-        pprint.pprint(data)
+        # pprint.pprint(data)
 
         new_test = data
         if 'ID' in new_test.keys():
-            print "\n\nedycja testu"
+            # print "\n\nedycja testu"
             # sprawdziæ grupê
             old_test = self[new_test['ID']]
             if old_test['group'] != new_test['group']:
-                print "zmiana grupy", old_test['group'], "na", new_test['group']
+                # print "zmiana grupy", old_test['group'], "na", new_test['group']
                 l = self["GROUP##" + old_test['group']]
-                print l, "-", new_test['ID']
+                # print l, "-", new_test['ID']
                 l.pop(l.index(new_test['ID']))
                 self["GROUP##" + old_test['group']] = l
-                print l
+                # print l
                 # dodaæ do nowej
                 if new_test['group'] not in self['#TEST_GROUP_LIST']:
                     self.append('#TEST_GROUP_LIST', new_test['group'], True)
@@ -517,14 +521,14 @@ class safedb:
                     
             for i in old_test['items']:              
                 if self[i]['ID'] not in new_ids:
-                    print "usuwanie przedmiotu", i
+                    # print "usuwanie przedmiotu", i
                     deleted_items.append(self.deleteItem(i))
                     
             new_test['items'] = new_ids
     
             # wrzuciæ nowy s³ownik na miejsce starego
             self[new_test['ID']] = new_test
-            pprint.pprint(self[new_test['ID']])
+            # pprint.pprint(self[new_test['ID']])
             #
             self.sync()
             return (new_test['ID'], deleted_items)
@@ -552,10 +556,10 @@ class safedb:
         else:
             self.append('GROUP##'+data['group'], new_test['ID'])
 
-        print "--" * 40, "TEST --"
-        pprint.pprint(new_test)
-        print "--" * 40, "TEST --"
-        print self['#TEST_GROUP_LIST']
+        # print "--" * 40, "TEST --"
+        # pprint.pprint(new_test)
+        # print "--" * 40, "TEST --"
+        # print self['#TEST_GROUP_LIST']
         
         self['#TEST_COUNT'] += 1
         self.sync()
@@ -563,6 +567,7 @@ class safedb:
 
 
     def printTests(self):
+        return
         for t_id in self['#TEST_LIST']:
             pprint.pprint(self[t_id])
 
@@ -608,5 +613,6 @@ class safedb:
         self[iid] = item
 
     def printItems(self):
+        return
         for i_id in self['#ITEM_LIST']:
             pprint.pprint(self[i_id])
