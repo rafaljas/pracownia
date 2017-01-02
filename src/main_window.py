@@ -118,7 +118,7 @@ class MainWindow:
             item = gtk.MenuItem(item_pair[0].decode("cp1250").encode("UTF-8"))
             self.file_menu.append(item)
             item.connect ("activate", item_pair[1])
-            item.show()        
+            item.show()
 
 
         file_item.set_submenu(self.file_menu)
@@ -1061,7 +1061,7 @@ class MainWindow:
             return
         for i in range(len(self.itemChoosingFields)):
             if self.itemChoosingFields[i][0] == widget:
-                print "Edytowane pole numer:", i
+                # print "Edytowane pole numer:", i
                 self.itemChoosingFields[i][3] = widget.get_text()
                 self.item_filter.refilter()
                 return
@@ -1090,7 +1090,7 @@ class MainWindow:
         if not self.chosen_rent_person:
             return
         if not self.check_gui_transition('rent-adv'):
-            print "abnormal gui transition! '" + str(self.gui_state) + "' to 'rent-adv'"
+            # print "abnormal gui transition! '" + str(self.gui_state) + "' to 'rent-adv'"
             return
         self.gui_state = 'rent-adv'
 
@@ -1106,12 +1106,12 @@ class MainWindow:
         # 3. zmieniæ wartoœæ w current store 
         # 4. zmieniæ wartoœc w przedmiocie 
         # 5. zmieniæ "rent_date" 
-        print "zmiana czasu wypo¿yczenia:", inx, value
+        # print "zmiana czasu wypo¿yczenia:", inx, value
         self.currentstore[inx][5] = int(value)
         value = int(value)
         value *= 60*60*24
         new_date = self.time2string(time.time()+value)
-        print "new date:", new_date
+        # print "new date:", new_date
         self.currentstore[inx][4] = new_date
 
         self.tracker['current-pers']['rent'][int(inx)][2] = new_date
@@ -1122,9 +1122,9 @@ class MainWindow:
                 rent_date = rented[2]
                 
         if self.tracker['current-pers']['rent_date'] != rent_date:
-            print "change:", self.tracker['current-pers']['rent_date'], rent_date
+            # print "change:", self.tracker['current-pers']['rent_date'], rent_date
             self.tracker['current-pers']['rent_date'] = rent_date
-        print element
+        # print element
 
         i_id = element[0]
         sig = element[3]
@@ -1195,7 +1195,7 @@ class MainWindow:
             end_date = map(lambda x: int(x), r[2].split("."))
             now = map(lambda x: int(x), self.time2string(time.time()).split("."))
             left_time = datetime.date(*end_date) - datetime.date(*now)
-            print "left_time:", left_time
+            # print "left_time:", left_time
             self.currentstore.append([r[0], test, self.config[r[0]]['item:name'], r[3], r[2], left_time.days])
         
         treeview = gtk.TreeView(self.currentstore)
@@ -1246,8 +1246,8 @@ class MainWindow:
     #========================================================================================================
 
     def check_gui_transition(self, new_gui_state):
-        print "\n  *** Poprzedni stan:", self.gui_state, "proponowany:", new_gui_state
-        print
+        # print "\n  *** Poprzedni stan:", self.gui_state, "proponowany:", new_gui_state
+        # print
         return new_gui_state in self.gui_transitions[self.gui_state]
       
     def destroy_tmp(self, widget = None, data = None):        
@@ -1321,8 +1321,9 @@ class MainWindow:
             self.gui_state = 'ready'            
             
         else:
-            print "\n\n Unknown window aborted!\n"
-            print self.gui_state, self.tmp_dialog[-1].title
+            pass
+            # print "\n\n Unknown window aborted!\n"
+            # print self.gui_state, self.tmp_dialog[-1].title
         self.destroy_tmp()
 
     #========================================================================================================
@@ -1332,21 +1333,21 @@ class MainWindow:
 
     def printPersonHistoryClicked(self, widget = None):
         if not self.check_gui_transition('pers-his'):
-            print "abnormal gui transition! '" + str(self.gui_state) + ' "pers-his"'
+            # print "abnormal gui transition! '" + str(self.gui_state) + ' "pers-his"'
             return
         self.gui_state = 'pers-his'
         self.historyDialogPopUp(self.person_view)
 
     def printItemHistoryClicked(self, widget = None):
         if not self.check_gui_transition('item-his'):
-            print "abnormal gui transition! '" + str(self.gui_state) + ' "item-his"'
+            # print "abnormal gui transition! '" + str(self.gui_state) + ' "item-his"'
             return
         self.gui_state = 'item-his'
         self.historyDialogPopUp(self.item_view)        
 
     def printTestHistoryClicked(self, widget = None):
         if not self.check_gui_transition('test-his'):
-            print "abnormal gui transition! '" + str(self.gui_state) + ' "test-his"'
+            # print "abnormal gui transition! '" + str(self.gui_state) + ' "test-his"'
             return
         self.gui_state = 'test-his'
         self.historyDialogPopUp(self.test_view)
@@ -1363,7 +1364,7 @@ class MainWindow:
         mode = obj['ID'][:4].lower()
         
         self.tracker['chosen-history'] = obj
-        print "main_window.historyDialogPopUp():", obj
+        # print "main_window.historyDialogPopUp():", obj
 
         dialog = gtk.Dialog(title="Historia".decode("cp1250").encode("UTF-8"),
                             parent=self.window, flags=gtk.DIALOG_MODAL  | gtk.DIALOG_DESTROY_WITH_PARENT, buttons=None)
@@ -1434,7 +1435,7 @@ class MainWindow:
     def createItemButton(self, widget = None):
         # przycisk w oknie g³ównym
         if not self.check_gui_transition('item-new'):
-            print "abnormal gui transition! '" + str(self.gui_state) + ' "item-new"'
+            # print "abnormal gui transition! '" + str(self.gui_state) + ' "item-new"'
             return
         self.gui_state = 'item-new'
         self.openNewTestItemDialogPopUp("Tworzenie przedmiotu")
@@ -1443,7 +1444,7 @@ class MainWindow:
     def editItemButton(self, widget = None):
         # przycisk w oknie g³ównym
         if not self.check_gui_transition('item-edit'):
-            print "abnormal gui transition! '" + str(self.gui_state) + ' "item-edit"'
+            # print "abnormal gui transition! '" + str(self.gui_state) + ' "item-edit"'
             return
 
         # srawdziæ wybrany
@@ -1466,7 +1467,7 @@ class MainWindow:
 
     def createTestItemClicked(self, widget = None):
         if not self.check_gui_transition(self.gui_state + ":titem-new"):
-            print "abnormal gui transition! '" + str(self.gui_state) + '"' + self.gui_state + ':titem-new"'
+            # print "abnormal gui transition! '" + str(self.gui_state) + '"' + self.gui_state + ':titem-new"'
             return
         self.gui_state += ":titem-new"
         #self.tracker['current-item'] = {}
@@ -1478,7 +1479,7 @@ class MainWindow:
         if ite == None:
             return
         if not self.check_gui_transition(self.gui_state + ":titem-edit"):
-            print "abnormal gui transition! '" + str(self.gui_state) + '"' + self.gui_state + ':titem-edit"'
+            # print "abnormal gui transition! '" + str(self.gui_state) + '"' + self.gui_state + ':titem-edit"'
             return
         self.gui_state += ":titem-edit"
         idd = model.get_value(ite, 0)
@@ -1486,7 +1487,7 @@ class MainWindow:
         self.tracker['current-item'] = self.tracker['current-test']['items'][index]
         self.tracker['current-item-idd'] = idd
         self.tracker['current-item-ite'] = ite
-        pprint.pprint(self.tracker['current-item'])
+        # pprint.pprint(self.tracker['current-item'])
 
         self.openNewTestItemDialogPopUp("Edycja przedmiotu testowego")     
 
@@ -1537,7 +1538,7 @@ class MainWindow:
 
     def delete_approve(self, widget = None, event = None, data = None):
         self.gui_state += "?delete"
-        print self.gui_state
+        # print self.gui_state
         dialog = gtk.Dialog(title="Usuwanie przedmiotu.".decode("cp1250").encode("UTF-8"),
                             parent=self.window, flags=gtk.DIALOG_MODAL  | gtk.DIALOG_DESTROY_WITH_PARENT, buttons=None)
         self.tmp_dialog.append(dialog)
@@ -1555,7 +1556,7 @@ class MainWindow:
             rented = True
         
         if rented:
-            print "jesli cos wypozyczone"
+            # print "jesli cos wypozyczone"
             info = "Usuniêcie niemo¿liwe poniewa¿:\n".decode("cp1250").encode("UTF-8") + "\n".join(rented_list)
             label = gtk.Label(info)
             dialog.vbox.pack_start(label, True, True, 20)
@@ -1784,8 +1785,8 @@ class MainWindow:
             self.updateItemRow(i_id)
             self.gui_state = 'ready'
 
-        print "Zakoñczono edycjê przedmiotu:"
-        pprint.pprint(item)
+        # print "Zakoñczono edycjê przedmiotu:"
+        # pprint.pprint(item)
 
         self.destroy_tmp()            
 
@@ -1899,10 +1900,10 @@ class MainWindow:
         Naciœniêcie przycisku importowania danych o studentach. Otwiera okno wyboru pliku CSV.
         """
         if not self.check_gui_transition('pers-import'):
-            print "abnormal gui transition! '" + str(self.gui_state) + "' to 'pers-import'"
+            # print "abnormal gui transition! '" + str(self.gui_state) + "' to 'pers-import'"
             return
         self.gui_state = 'pers-import'
-        print self.gui_state
+        # print self.gui_state
         
         dialog = gtk.FileSelection("Wybierz plik z list¹ studentów".decode("cp1250").encode("UTF-8"))
         dialog.set_modal(True)
@@ -1925,10 +1926,10 @@ class MainWindow:
         try:
             lines = open(import_file, 'r').readlines()            
         except Exception, e:
-            print e
+            # print e
             return
         lines = converter.extract(lines)
-        #print lines
+        # print lines
 
         self.destroy_tmp()
         self.comparePersonListPopUp(lines)
@@ -1944,10 +1945,10 @@ class MainWindow:
         """
         ##### porawne - do odkomentowania!
         if not self.check_gui_transition('pers-compare'):
-            print "abnormal gui transition! '" + str(self.gui_state) + "' to 'pers-compare'"
+            # print "abnormal gui transition! '" + str(self.gui_state) + "' to 'pers-compare'"
             return
         self.gui_state = 'pers-compare'
-        print self.gui_state
+        # print self.gui_state
         dialog = gtk.Dialog(title="Dodawanie / aktualizacja kont".decode("cp1250").encode("UTF-8"),
                             parent=self.window, flags=gtk.DIALOG_MODAL  | gtk.DIALOG_DESTROY_WITH_PARENT, buttons=None)
 
@@ -1974,19 +1975,19 @@ class MainWindow:
         
         for r in lines:
             if r in start_person_dict:
-                print "year update for:", start_person_dict[r], "from", self.config[start_person_dict[r]]['year'], "to", lines[r]['year']
+                # print "year update for:", start_person_dict[r], "from", self.config[start_person_dict[r]]['year'], "to", lines[r]['year']
                 self.config[start_person_dict[r]]['year'] = lines[r]['year']
                 del start_person_dict[r]
                 updated += 1
             else:
-                print "new:", lines[r]
+                # print "new:", lines[r]
                 new_ids.append(self.config.addPerson(lines[r], False))
                 new += 1
 
         
         for indx in start_person_dict:
             p_id = start_person_dict[indx]
-            print "to be deleted:", p_id
+            # print "to be deleted:", p_id
             if 'year' not in self.config[p_id].keys():
                 continue
             elif self.config[p_id]['rent']:
@@ -1994,14 +1995,14 @@ class MainWindow:
                 marked['year'] = "DO USUNIÊCIA".decode("cp1250").encode("UTF-8")
                 self.config[p_id] = marked
                 self.updatePersonRow(p_id)
-                print "MARKED:", p_id
-                print self.config[p_id]
+                # print "MARKED:", p_id
+                # print self.config[p_id]
             else:
                 self.config.deletePerson(p_id, False)
                 self.removePersonRow(p_id)
                 deleted += 1
-                print "Deleted:", p_id
-                print self.config[p_id]
+                # print "Deleted:", p_id
+                # print self.config[p_id]
 
         self.config.sync()
         for p_id in new_ids:
@@ -2038,7 +2039,7 @@ class MainWindow:
         Okno potwierdzenia usuniêcia. Jeœli osoba ma coœ wypo¿yczone to tylko informacja o zakazaniu operacji (wraz z podaniem przyczyny)
         """
         self.gui_state += "?delete"
-        print self.gui_state
+        # print self.gui_state
         dialog = gtk.Dialog(title="Usuwanie konta.".decode("cp1250").encode("UTF-8"),
                             parent=self.window, flags=gtk.DIALOG_MODAL  | gtk.DIALOG_DESTROY_WITH_PARENT, buttons=None)
         self.tmp_dialog.append(dialog)
@@ -2083,7 +2084,7 @@ class MainWindow:
         if ite == None:
             return
         if not self.check_gui_transition('pers-edit'):
-            print "abnormal gui transition! '" + str(self.gui_state) + "' to 'pers-edit'"
+            # print "abnormal gui transition! '" + str(self.gui_state) + "' to 'pers-edit'"
             return
         self.gui_state = 'pers-edit'
 
@@ -2091,7 +2092,7 @@ class MainWindow:
 
         person = self.config[p_id]
 
-        pprint.pprint(person)
+        # pprint.pprint(person)
         self.tracker['current-pers'] = person
        
         d_title = "Edycja konta".decode("cp1250").encode("UTF-8")
@@ -2107,7 +2108,7 @@ class MainWindow:
         """
 
         if not self.check_gui_transition('pers-new'):
-            print "abnormal gui transition! '" + str(self.gui_state) + "' to 'pers-new'"
+            # print "abnormal gui transition! '" + str(self.gui_state) + "' to 'pers-new'"
             return
         self.gui_state = 'pers-new'
 
@@ -2123,7 +2124,7 @@ class MainWindow:
         """
 
         if not self.check_gui_transition('pers-new'):
-            print "abnormal gui transition! '" + str(self.gui_state) + "' to 'pers-new'"
+            # print "abnormal gui transition! '" + str(self.gui_state) + "' to 'pers-new'"
             return
         self.gui_state = 'pers-new'
 
@@ -2333,7 +2334,6 @@ class MainWindow:
             # sprawdziæ czy modyfikacja czasu nie pada!
             i_id = model.get_value(ite, 0)
             sig = model.get_value(ite, 3)
-            print i_id, sig
 
             item = self.config[i_id]
             person = self.tracker['current-pers']
@@ -2345,7 +2345,7 @@ class MainWindow:
                 r = person['rent'][inx]
                 if r[3] == sig:
                     returned = person['rent'].pop(inx)
-                    print "Usuniêcie wypo¿yczenia z listy:", returned
+                    # print "Usuniêcie wypo¿yczenia z listy:", returned
                     returned[1] = "zwrot"
                     returned[2] = self.time2string(time.time())
                     person['rent_old'].append(returned)
@@ -2370,12 +2370,12 @@ class MainWindow:
                     returned[1] = 'zwrot'
                     returned[2] = self.time2string(time.time())
                     item['history'].append(returned)
-                    print "end"
+                    # print "end"
                     break
                 
             for inx in range(len(item['Q'])):
                 r = item['Q'][inx]
-                print "now:", r
+                # print "now:", r
                 if r[0] == sig:
                     item['Q'][inx] = item['Q'][inx][:2]
                     break
@@ -2404,9 +2404,9 @@ class MainWindow:
                 self.tracker['current-pers'][k] = e.get_text(e.get_start_iter(), e.get_end_iter())
 
                     
-        print "Dane do zapisania:"
-        pprint.pprint(self.tracker['current-pers'])
-        print "\n"
+        # print "Dane do zapisania:"
+        # pprint.pprint(self.tracker['current-pers'])
+        # print "\n"
         
         existing = 'ID' in self.tracker['current-pers'].keys()
         if existing:
@@ -2416,7 +2416,7 @@ class MainWindow:
             p_id = self.config.addPerson(self.tracker['current-pers'])
             self.person_store.prepend(self.createPersonRow(p_id))
 
-        pprint.pprint(self.config[p_id])
+        # pprint.pprint(self.config[p_id])
 
         self.abort()
         
@@ -2459,7 +2459,7 @@ class MainWindow:
         
     def delete_test_approve(self, widget = None, event = None, data = None):
         self.gui_state += "?delete"
-        print self.gui_state
+        # print self.gui_state
         dialog = gtk.Dialog(title="Usuwanie testu.".decode("cp1250").encode("UTF-8"),
                             parent=self.window, flags=gtk.DIALOG_MODAL  | gtk.DIALOG_DESTROY_WITH_PARENT, buttons=None)
         self.tmp_dialog.append(dialog)
@@ -2477,7 +2477,7 @@ class MainWindow:
                 rented = True
 
         if rented:
-            print "jesli cos wypozyczone"
+            # print "jesli cos wypozyczone"
             info = "Usuniêcie niemo¿liwe poniewa¿:\n".decode("cp1250").encode("UTF-8") + "\n".join(rented_list)
             label = gtk.Label(info)
             dialog.vbox.pack_start(label, True, True, 20)
@@ -2511,7 +2511,7 @@ class MainWindow:
         if ite == None:
             return
         if not self.check_gui_transition('test-edit'):
-            print "abnormal gui transition! '" + str(self.gui_state) + "' to 'test-edit'"
+            # print "abnormal gui transition! '" + str(self.gui_state) + "' to 'test-edit'"
             return
         self.gui_state = 'test-edit'
 
@@ -2523,7 +2523,7 @@ class MainWindow:
             items.append(self.config[i])
         test['items'] = items
 
-        pprint.pprint(test)
+        # pprint.pprint(test)
        
         self.tracker['current-test'] = test
         self.tracker['current-test-item-ids'] = []
@@ -2533,7 +2533,7 @@ class MainWindow:
         
     def openNewTestDialogPopUp(self, widget = None):
         if not self.check_gui_transition('test-new'):
-            print "abnormal gui transition! '" + str(self.gui_state) + "' to 'test-new'"
+            # print "abnormal gui transition! '" + str(self.gui_state) + "' to 'test-new'"
             return
         self.gui_state = 'test-new'
 
@@ -2732,7 +2732,7 @@ class MainWindow:
         for i_id in self.config[t_id]['items']:
             self.item_store.prepend(self.createItemRow(i_id))
 
-        pprint.pprint(self.config[t_id])
+        # pprint.pprint(self.config[t_id])
 
         self.abort()
     
@@ -2743,7 +2743,8 @@ class MainWindow:
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     def notImplemented(self, widget = None, data = None):
-        print "\n\nnot implemented!", widget, data, "\n"
+        # print "\n\nnot implemented!", widget, data, "\n"
+        pass
 
     def main(self):
         gtk.main()
@@ -2773,7 +2774,7 @@ class MainWindow:
 
     def destroy(self, widget, data = None):
         """Zakoñczenie aplikacji"""
-        print "destroy"
+        # print "destroy"
         self.wiki_thread.ssq.put('QUIT')
         self.config.closeFile()        
         ### stop wiki
@@ -2832,7 +2833,7 @@ class MainWindow:
                 reload_wiki_popup = True
 
             elif m == 'FAILED':
-                print "WIKI FAILED"
+                # print "WIKI FAILED"
                 # powtarzanie operacji... dodaæ ###
                 self.wiki_thread.ssq.put('QUIT') ### 
                 self.w_image.set_from_file('gfx\\red.gif')
@@ -2847,13 +2848,13 @@ class MainWindow:
 
 
             elif m[:18] == "action page_save *":
-                print "WIKI SAVES!", m[18:]
+                # print "WIKI SAVES!", m[18:]
                 if m[-3:] == 'end':
                     if self.all_wiki_operations_done:
-                        print "poinformowac o wykonaniu zadania"
+                        # print "poinformowac o wykonaniu zadania"
                         self.config.wiki_updated_queue.put(m.split('*')[1])
                     else:
-                        print "awaria podczas zapisywania!"
+                        # print "awaria podczas zapisywania!"
                         self.wiki_thread.ssq.put('QUIT') ### 
                         self.w_image.set_from_file('gfx\\red.gif')
                         self.wiki['state'] = "Nieudane zapisywanie."
@@ -2863,7 +2864,8 @@ class MainWindow:
                     self.all_wiki_operations_done = False
 
             else:
-                print "WIKI says:", m
+                pass
+                # print "WIKI says:", m
                 
             if self.wiki_popup_open and reload_wiki_popup:
                 self.wiki_popup_open = False
@@ -2941,7 +2943,7 @@ class MainWindow:
             if self.config[key] != value.get_text():
                 self.config[key] = value.get_text()
                 changed = True
-                print key, self.config[key]
+                # print key, self.config[key]
 
         if changed:
             self.config.sync()
@@ -2983,7 +2985,7 @@ class MainWindow:
     def wikiLogin(self):
         self.w_image.set_from_file('gfx\\yellow.gif')
         self.wiki['state'] = "£¹czenie...".decode("cp1250").encode("UTF-8")
-        print "WIKI LOGIN", self.config['#wiki-path'], self.config['#wiki-login'], self.config['#wiki-pass']
+        # print "WIKI LOGIN", self.config['#wiki-path'], self.config['#wiki-login'], self.config['#wiki-pass']
         self.wiki_proxy = wiki_proxy.wikiclient(self.config['#wiki-path'], self.config['#wiki-login'], self.config['#wiki-pass'])
         self.wiki_thread = wiki_thread.wikithread(self, self.wiki_proxy)
         
@@ -3073,13 +3075,13 @@ class MainWindow:
 
     # ------------------------------------------------------------------------------------------------------------------------------------
     def resourcePopUp(self, widget = None, o_id = None, t_id = None):
-        print o_id
+        # print o_id
         if self.gui_state == 'test-resource':
             obj = 'test'            
             id_l = self.config[o_id[0]]['items']
             chosen = id_l.index(o_id[1])
             o_id = o_id[0]
-            print o_id, chosen, id_l
+            # print o_id, chosen, id_l
         else:
             obj = 'item'
             id_l = [o_id]
@@ -3115,7 +3117,7 @@ class MainWindow:
             entry.show()
             hbox.pack_start(entry, True, True, 5)
             self.tracker['chosen-item'] = self.config[id_l[chosen]]
-            print "resource:choosing", self.tracker['chosen-item']
+            # print "resource:choosing", self.tracker['chosen-item']
             self.tracker['choose-list'] = choose_list
 
             hbox.show()
@@ -3131,7 +3133,7 @@ class MainWindow:
         resource_list = []
         for i_id in id_l:
             item = self.config[i_id]
-            #print item['category']
+            # print item['category']
             
             if item['category'] in self.config.not_tracked_items:
                 hbox = gtk.HBox(False, 5)
@@ -3310,7 +3312,7 @@ class MainWindow:
         else:
             opis = item['Q'][idx][1]
         model.set_value(ite, 1, opis.replace("\n", " "))
-        print item['Q'][idx]
+        # print item['Q'][idx]
 
 
     def changeActiveResource(self, widget = None):
@@ -3318,7 +3320,7 @@ class MainWindow:
         self.tracker['last-element'] = None
         entry = widget.get_text()
         index = self.tracker['choose-list'].index(entry)
-        print index
+        # print index
         self.tracker['resource-idx'] = index
         for g in self.gui_list:
             g.hide()
@@ -3334,7 +3336,7 @@ class MainWindow:
             return
 
         self.gui_state += "?rdelete"
-        print self.gui_state
+        # print self.gui_state
         
         sig = model.get_value(ite, 0)
 
@@ -3423,7 +3425,7 @@ class MainWindow:
             item['last-sig'] += 1
             item['Q'].append([item['sig'] +"/"+ str(item['last-sig']), ""])
             item['history'].append([item['sig'] +"/"+ str(item['last-sig']), 'dodany', self.time2string(time.time()), ""])
-            print item['Q']
+            # print item['Q']
             self.resource_list[index][1].append(item['Q'][-1] + ["dostêpny".decode("cp1250").encode("UTF-8")])
             self.config[item['ID']] = item
             self.config.sync()            
@@ -3443,10 +3445,10 @@ class MainWindow:
         Naciœniêcie przycisku drukowania d³u¿ników. Otwiera okno wyboru pliku.
         """
         if not self.check_gui_transition('dept-export'):
-            print "abnormal gui transition! '" + str(self.gui_state) + "' to 'dept-export'"
+            # print "abnormal gui transition! '" + str(self.gui_state) + "' to 'dept-export'"
             return
         self.gui_state = 'dept-export'
-        print self.gui_state
+        # print self.gui_state
 
         dialog = gtk.FileSelection("Wybierz gdzie zapisaæ plik".decode("cp1250").encode("UTF-8"))
         dialog.set_modal(True)
@@ -3486,7 +3488,7 @@ class MainWindow:
             dept_file.write("\n".join(print_list).decode("UTF-8").encode("cp1250"))
             dept_file.close()
         except Exception, e:
-            print e
+            # print e
             return
         self.abort()
 
